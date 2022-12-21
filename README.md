@@ -34,15 +34,19 @@ URL: POST http://localhost:8080/api/v1/dags/{NAME_OF_DAG}/dagRuns
 
 Example JSON request body
 
+```
 {
     "execution_date": "2022-10-28T09:00:00Z",
     "conf": {
         "data": "dbupdate"
     }
 }
+```
 
 As long as execution_date is before the current date time, it should run immediately. If it's in the future, it will be scheduled to run at that time.
 
 The above conf field is accessed in the code by
 
+```
 data_params=kwargs['dag_run'].conf['data']
+```
