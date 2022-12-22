@@ -40,6 +40,7 @@ PYTHON = sys.executable
 
 BASE_DIR = tempfile.gettempdir()
 
+# This function is run on any failure callback in the other workflows.
 def task_failure_alert(context):
     print("Fail works  !  ")
     with open('/Users/kevincheung/DB1.txt', 'w') as file:
@@ -74,11 +75,11 @@ with DAG(
     error = None
 
     # [START howto_operator_python_kwargs]
-    # Generate 5 sleeping tasks, sleeping from 0.0 to 0.4 seconds respectively
-    
 
+    
+    # The first task which updates file 1
     @task(task_id=f'update_for_1', on_failure_callback=task_failure_alert)
-    def my_sleeping_function(random_base, **kwargs):
+    def my_updating_function(random_base, **kwargs):
 
         data_params=kwargs['dag_run'].conf['data']
 
@@ -92,12 +93,13 @@ with DAG(
         with open('/Users/kevincheung/DB1.txt', 'w') as file:
             file.write(str(data_params))
 
-    sleeping_task = my_sleeping_function(random_base=0.0)
+    updating_task = my_updating_function(random_base=0.0)
 
-    run_this >> sleeping_task
+    run_this >> updating_task
 
+    # The second task which updates file 2. Will throw an error if input for data argument is abc.
     @task(task_id=f'update_for_2', on_failure_callback=task_failure_alert)
-    def my_sleeping_function2(random_base, **kwargs):
+    def my_updating_function2(random_base, **kwargs):
 
         data_params=kwargs['dag_run'].conf['data']
 
@@ -111,8 +113,8 @@ with DAG(
         with open('/Users/kevincheung/DB2.txt', 'w') as file:
             file.write(str(data_params))
 
-    sleeping_task2 = my_sleeping_function2(random_base=0.1)
+    updating_task2 = my_updating_function2(random_base=0.1)
 
-    run_this >> sleeping_task2
+    run_this >> updating_task2
 
     # [END howto_operator_python_kwargs]
