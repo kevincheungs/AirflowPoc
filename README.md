@@ -1,5 +1,9 @@
 # AirflowPoc
 
+## Description
+
+Simple workflow that writes values to a few files. If an error happens, then the values of the files will be overwritten to reflect that.
+
 ## Setting up Airflow
 Follow directions to install Airflow server locally
 
